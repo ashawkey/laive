@@ -34,7 +34,7 @@ def get_DLU(A):
             else: L[i, j] = A[i, j]
     return D, L, U
 
-def solveL(L, b, use_LU=False):
+def solve_L(L, b, use_LU=False):
     # solve Lx = b, assume L is lower-triangular
     # use_LU: set L[i,i] to 1 if true
     n, n = L.shape
@@ -46,7 +46,7 @@ def solveL(L, b, use_LU=False):
             x[i+1:n] -= x[i] * L[i+1:n, i]
     return x
 
-def solveU(U, b, use_LU=False):
+def solve_U(U, b, use_LU=False):
     # solve Ux = b, assume U is upper-triangular
     # use_LU: set U[i,i] to 1 if true
     n, n = U.shape

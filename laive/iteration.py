@@ -1,5 +1,5 @@
-import scipy
 import numpy as np
+
 from . inversion import inverse_D, inverse_L
 from . basic import get_DLU
 
@@ -35,7 +35,7 @@ def solve_iterative(A, b, method="Jacobi", x0=None, max_step=10000, tol=0.0001, 
             omega = 2 / (1 + np.sqrt(1 - rou**2))
             
             if verbose:
-                print(f"Estimated best omega for SOR: {omega}")
+                print(f"Estimated omega for SOR: {omega}")
 
     assert 0 < omega < 2
 

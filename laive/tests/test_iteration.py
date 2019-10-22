@@ -1,5 +1,5 @@
 import numpy as np
-from laive import solve_iterative
+from .. iteration import solve_iterative
 
 
 def test_iteration():

@@ -1,8 +1,6 @@
-import scipy
 import numpy as np
 
-from . factorization_Cholesky import solve_LDL
-from . basic import solveL, solveU
+from . basic import solve_L, solve_U
 
 #eps = np.finfo(np.float64).eps
 
@@ -60,43 +58,17 @@ def retrieve_QR(X, d):
         R[j, j:] = X[j, j:]
     return Q, R
 
-def solveQR(A, b):
+def solve_QR(A, b):
     Q, R = retrieve_QR(*factorize_QR(A))
-    #Q, R = scipy.linalg.qr(A)
     c = Q.T @ b
-    return solveU(R, c)
+    return solve_U(R, c)
 
 def LS_regularized(A, b):
     C = A.T @ A
     d = A.T @ b
-    return solve_LDL(C, d)
+    
 
 def LS_QR(A, b):
     C = A.T @ A
     d = A.T @ b
-    return solveQR(C, d)
-
-
-if __name__ == "__main__":
-    ## (2)
-    t = np.array([-1, -0.75, -0.5, 0, 0.25, 0.5, 0.75])
-    y = np.array([1, 0.8125, 0.75, 1, 1.3125, 1.75, 2.3125])
-
-    A = np.ones((7, 3))
-    for i in range(7):
-        A[i, 0] = t[i] * t[i]
-        A[i, 1] = t[i]
-
-    res_ldl = LS_regularized(A, y)
-    res_qr = LS_QR(A, y)
-
-    print(res_ldl)
-    print("res_ldl error",  np.linalg.norm(A@res_ldl - y, ord=2))
-    print(res_qr)
-    print("res_qr error",  np.linalg.norm(A@res_qr - y, ord=2))
-    
-
-    
-
-
-
+    return solve_QR(C, d)

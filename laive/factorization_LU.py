@@ -1,6 +1,6 @@
 import numpy as np
-from scipy.linalg import lu, solve
-from . basic import solveL, solveU
+
+from . basic import solve_L, solve_U
 
 def factorize_LU(A):
     # LU decomposition, LU compressed in one matrix
@@ -28,9 +28,9 @@ def retrieve_LU(LU):
                 U[i, j] = LU[i, j]
     return L, U
 
-def solveLU(A, b):
+def solve_LU(A, b):
     LU = factorize_LU(A)
-    return solveU(LU, solveL(LU, b, use_LU=True))
+    return solve_U(LU, solve_L(LU, b, use_LU=True))
 
 def factorize_PLU(A):
     # PLU decomposition, LU compressed in one matrix
@@ -45,38 +45,6 @@ def factorize_PLU(A):
         X[i+1:n, i+1:n] -= X[i+1:n, i][:,np.newaxis] @ X[i, i+1:n][np.newaxis,:]
     return P, X
 
-def solvePLU(A, b):
+def solve_PLU(A, b):
     P, LU = factorize_PLU(A)
-    return solveU(LU, solveL(LU, P@b, use_LU=True))
-
-if __name__ == "__main__":
-    l = 84
-    A = np.zeros((l, l))
-    b = np.zeros(l)
-
-    for i in range(l):
-        A[i, i] = 6
-        if i != 0: A[i, i-1] = 8
-        if i != l-1: A[i, i+1] = 1
-
-        if i == 0: b[i] = 7
-        elif i == l-1: b[i] = 14
-        else: b[i] = 15
-    
-    #print(A)
-    #print(b)
-    
-    #res_scipy = solve(A, b) # scipy solution
-    A = A.astype(np.float64)
-    b = b.astype(np.float64)
-
-    res_true = np.ones(l)
-    res_lu = solveLU(A, b)
-    res_plu = solvePLU(A, b)
-
-    #print(res_lu)
-    print("LU L1 error:", np.linalg.norm(res_lu-res_true, ord=1))
-    #print(res_plu)
-    print("PLU L1 error:", np.linalg.norm(res_plu-res_true, ord=1))
-
-
+    return solve_U(LU, solve_L(LU, P@b, use_LU=True))

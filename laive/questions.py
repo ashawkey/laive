@@ -44,15 +44,16 @@ def question_4_1(n=100, a=1/2, epsilon=1):
     def get_res(x):
         return (1-a)/(1-np.e**(-1/epsilon))*(1-np.e**(-x/epsilon))+a*x
     h = 1 / n
-    A = np.zeros((n, n))
-    b = np.zeros(n)
-    x = np.zeros(n)
-    for i in range(n):
+    A = np.zeros((n-1, n-1))
+    b = np.zeros(n-1)
+    x = np.zeros(n-1)
+    for i in range(n-1):
         b[i] = a * h**2
-        x[i] = get_res(i*h)
+        if i == n-2: b[i] -= epsilon + h # x[-1] = 0, x[n] = 1
+        x[i] = get_res((i+1)*h)
         for j in range(n):
             if i>0: A[i, i-1] = epsilon
             A[i, i] = - (2 * epsilon + h)
-            if i<n-1: A[i, i+1] = epsilon + h
+            if i<n-2: A[i, i+1] = epsilon + h
     return A, b, x
     

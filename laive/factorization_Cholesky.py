@@ -1,6 +1,6 @@
 import numpy as np
-from scipy.linalg import cholesky, solve
-from . basic import solveL, solveU
+
+from . basic import solve_L, solve_U
 
 def factorize_Cholesky(A):
     # Cholesky decomposition, return L
@@ -15,7 +15,7 @@ def factorize_Cholesky(A):
 
 def solve_Cholesky(A, b):
     L = factorize_Cholesky(A)
-    return solveU(L.T, solveL(L, b))
+    return solve_U(L.T, solve_L(L, b))
 
 def factorize_LDL(A):
     # LDL' decomposition, LD compressed in one matrix.
@@ -33,53 +33,4 @@ def factorize_LDL(A):
 def solve_LDL(A, b):
     L =  factorize_LDL(A)
     dd = np.diag(L) ** -1
-    return solveU(L.T, dd * solveL(L, b, use_LU=True), use_LU=True)
-
-if __name__ == "__main__":
-    # (1)
-    l = 100
-    A = np.zeros((l, l))
-    for i in range(l):
-        A[i, i] = 10
-        if i != 0: A[i, i-1] = 1
-        if i != l-1: A[i, i+1] = 1
-    
-    cholesky_error = []
-    ldl_error = []
-    for seed in range(100):
-        np.random.seed(seed)
-        b = np.random.rand(100)
-
-        res_scipy = solve(A, b) # use scipy as the ground truth
-        res_cholesky = solve_Cholesky(A, b)
-        res_LDL = solve_LDL(A, b)
-
-        #print(res_cholesky)
-        cholesky_error.append(np.linalg.norm(res_scipy - res_cholesky, 1))
-        #print(res_LDL)
-        ldl_error.append(np.linalg.norm(res_scipy - res_LDL, 1))
-
-    print("Cholesky L1 error: ", np.mean(cholesky_error))
-    print("LDL L1 error: ", np.mean(ldl_error))
-
-    # (2)
-    l = 40
-    A = np.zeros((l, l))
-    b = np.zeros(l)
-    for i in range(l):
-        for j in range(l):
-            A[i, j] = 1 / (i + j + 1);
-            b[i] += A[i, j]
-    
-    res_truth = np.ones(l)
-    #res_scipy = solve(A, b)
-    res_cholesky = solve_Cholesky(A, b)
-    res_LDL = solve_LDL(A, b)
-
-    print(A)
-    print(b)
-
-    print(res_cholesky)
-    print("Cholesky L1 error: ", np.linalg.norm(res_truth - res_cholesky, 1))
-    print(res_LDL)
-    print("LDL L1 error: ", np.linalg.norm(res_truth - res_LDL, 1))
+    return solve_U(L.T, dd * solve_L(L, b, use_LU=True), use_LU=True)
