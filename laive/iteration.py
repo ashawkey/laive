@@ -3,7 +3,7 @@ import numpy as np
 from . inversion import inverse_D, inverse_L
 from . basic import get_DLU
 
-def solve_iterative(A, b, method="Jacobi", x0=None, max_step=10000, tol=0.0001, omega=None, verbose=False):
+def solve_iterative(A, b, method="Jacobi", x0=None, max_step=100000, tol=0.0001, omega=None, verbose=False):
     # A = D-L-U
     # Jacobi: x' = D^{-1}(L+U) x + D^{-1} b
     # GS & SOR: x' = (D-L)^{-1}U x + (D-L)^{-1} b

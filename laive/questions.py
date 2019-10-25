@@ -57,3 +57,13 @@ def question_4_1(n=100, a=1/2, epsilon=1):
             if i<n-2: A[i, i+1] = epsilon + h
     return A, b, x
     
+def question_6_1(a=[3, -5, 1]):
+    n = len(a)
+    A = np.zeros((n,n))
+    A[n-1, 0] = 1
+    A[n-1, n-1] = -a[n-1]
+    for i in range(1, n):
+        A[0, i] = -a[i-1]
+        if i > 1: A[i-1, i] = 1
+    return A
+
